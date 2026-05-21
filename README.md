@@ -16,3 +16,6 @@ To join into a fitness score, I'll use the following formula. P is the probabili
 2. Interpolate UMAP projection for 2D then a consolidated fitness score as the Z-axis and frequency in simulation to create the fitness landscape
 3. Project the frequency of mutations onto an AVR-Pik 3D structure
 4. Evaluate degree to which natural evolutionary trajectories are replicated
+
+## Dev Log
+- (26/05/20) Cloned mint repo into this repo and attempted to install their conda environment, but it failed due to some package conflicts. Asked Gemini to revise the environment.yml file, yielding `environment_revised.yml`. The environment installed fine using this updated environment file.
