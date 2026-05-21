@@ -22,4 +22,10 @@ To join into a fitness score, I'll use the following formula. P is the probabili
 - Cloned mint repo into this repo and attempted to install their conda environment, but it failed due to some package conflicts. Asked Gemini to revise the environment.yml file, yielding `environment_revised.yml`. The environment installed fine using this updated environment file.
 - Followed mutational-ppi/prepare_data.ipynb. Had to make some adjustments for my desired file organization. Wrote a bash script to collect the required data. There were some apparently out-of-date column names and dict keys in their script to access the dataframe, so I had to edit these to get the notebook to work properly.
 - With data prepared, I tried to run their embedding script, but ran into cuda issues. Realized its because I'm running on much newer hardware (laptop 5070Ti), so I need a newer CUDA version. Gemini assisted again and `environment_revised.yml` was again updated. CUDA is now available.
+- Ran into an `UnpicklingError` because of the upgrade to Pytorch 2.6. Error gave the solution; had to modify mint/helpers/extract.py.
+- Once I verified I could extract embeddings, I moved to generating embeddings with the goal of running their finetune_general script. To get it to work, I had to edit the weights_only arguments again because of the Pytorch upgrade, and I had to set the batch size to 1. Let it run over night, as it took at least an hour.
 
+### 26/05/21
+- Embedding generation for MutationalPPI worked. I then attempted to run their finetune script, but it assumed I was using weights and biases. Didn't want to make an account or anything, so I scrubbed that from their script. I also had to make several other edits to the script to save the models while training.
+- "Fine-tuning" didn't take long at all. Then I realized that this is the wrong task. I want to be doing the SKEMPI procedure, not MutationalPPI.
+- Successfully did fine-tuning with SKEMPI. Generating the embeddings actually took less than an hour. Had to make a few more modifications to the finetuning script to save the best models. Used the --use_mlp_for_cv flag to get a deep learning network for use.
