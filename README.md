@@ -18,4 +18,8 @@ To join into a fitness score, I'll use the following formula. P is the probabili
 4. Evaluate degree to which natural evolutionary trajectories are replicated
 
 ## Dev Log
-- (26/05/20) Cloned mint repo into this repo and attempted to install their conda environment, but it failed due to some package conflicts. Asked Gemini to revise the environment.yml file, yielding `environment_revised.yml`. The environment installed fine using this updated environment file.
+### 26/05/20
+- Cloned mint repo into this repo and attempted to install their conda environment, but it failed due to some package conflicts. Asked Gemini to revise the environment.yml file, yielding `environment_revised.yml`. The environment installed fine using this updated environment file.
+- Followed mutational-ppi/prepare_data.ipynb. Had to make some adjustments for my desired file organization. Wrote a bash script to collect the required data. There were some apparently out-of-date column names and dict keys in their script to access the dataframe, so I had to edit these to get the notebook to work properly.
+- With data prepared, I tried to run their embedding script, but ran into cuda issues. Realized its because I'm running on much newer hardware (laptop 5070Ti), so I need a newer CUDA version. Gemini assisted again and `environment_revised.yml` was again updated. CUDA is now available.
+

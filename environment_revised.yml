@@ -21,17 +21,19 @@ dependencies:
   - pdbfixer=1.7
   - pytest=7.4.4
   - pip:
-      - https://download.pytorch.org/whl/cu113/torch-1.12.1%2Bcu113-cp39-cp39-linux_x86_64.whl
+      - --extra-index-url https://download.pytorch.org/whl/cu129
+      - torch==2.8.0+cu129
+      - torchvision==0.23.0+cu129
+      - fairscale
+      - deepspeed
+      - lightning
       - einops==0.7.0
-      - fairscale==0.4.3
       - absl-py==2.1.0
       - datasets==2.13.2
-      - deepspeed==0.5.9
       - filelock==3.12.2
       - gdown==4.7.3
       - huggingface-hub==0.16.4
       - jupyterlab-widgets==3.0.10
-      - lightning==1.9.5
       - matplotlib==3.5.3
       - numpy==1.21.2
       - openpyxl==3.1.3
