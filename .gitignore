@@ -1,7 +1,9 @@
-mint/
+./mint/
 mint_mut_ppi_example/data/Mutation_perturbation_model.csv
 mint_mut_ppi_example/data/uniprot_sprot.fasta.gz
 mint_mut_ppi_example/data/uniprot_sprot.fasta
 mint_mut_ppi_example/data/processed_data.csv
 model_checkpoints/
 *.csv
+mint.ckpt
+SKEMPI_v2.joblib
