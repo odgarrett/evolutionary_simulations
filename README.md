@@ -28,11 +28,14 @@ Handles the mutational constraints. Should at least support simple amino acid ra
 ### Simulator
 Runs the main loop. At each step, it applies the mutator to the current set of sequences, sends a request to the controller (see controller below), receives fitness scores, then updates allele frequencies.
 
-### Controller
-Acts as a kind of internal server. Holds a common instance of the prediction model. Spins up parallel simulators, receives requests for model scores from simulators. It retrieves requests that are present in the cache (see database below) and predicts and stores those that aren't. Sends scores back to the simulators.
+### Server
+Acts as a kind of internal server. Holds a common instance of the prediction model. Receives requests for model scores from simulators. It retrieves requests that are present in the cache (see database below) and predicts and stores those that aren't. Sends scores back to the simulators.
 
 ### Database
 SQLite database with tables for the simulation cache and simulation results. It will have three tables: cache, simulations, and trajectories. Cache stores the aa sequence hash for fast look-up, the full amino acid sequence, and the model scores. Simulations keeps track of the different simulations ran with all of their parameters (e.g. analyzed protein, target proteins, mutator parameters, prediction model, population size, etc.), along with metadata like start_time and a UUID. Trajectories stores the stepwise data collected during the simulations.
+
+### Experiment
+Orchestrates multiple simulation runs to test a specific hypothesis. Manages configs and disk I/O.
 
 ### Analysis
 Somehow makes sense of all of these data, doing at least the following:
@@ -61,3 +64,11 @@ Somehow makes sense of all of these data, doing at least the following:
 ### 26/05/23
 - Before getting started on the evolutionary simulation framework, I was thinking about names to give it. I think I've landed on playing on the concept of the Pareto frontier, which is the set of solutions to a multi-objective optimization function that are Pareto efficient (when there are no ways to improve one objective without hurting another). pareto-prot will be the tentative name.
 
+### 26/05/24
+- Worked out basic model architecture and dataflow (see above). Shaping up to be quite the project.
+- Modularized the MINT prediction logic. Used Gemini to develop a test to make sure everything works. Probably a good habit to do this along the way.
+
+### 25/05/25
+- Starting fleshing out the main prediction loop assuming a basic greedy algorithm approach with mutations on the protein level. Built the corresponding mutator class and function.
+- Built the objective function for pathogen escape. It has configurable parameters to set the bounds and the slope of the sigmoid function. The slope determines essentially how sensitive the composite fitness score is to binding each of the targets, so for AVR-Pik, it will be interesting to play with. For example, one would expect the immune receptor to be on a hair-trigger, while the virulence function of OsHIPP binding may be less so. By changing the slope of the sigmoid function and seeing how the evolutionary landscape changes, we can play out different scenarios.
+- Also noticed that I was including my MINT scoring logic in the .gitignore, so I fixed that today and issued a corrective commit.
