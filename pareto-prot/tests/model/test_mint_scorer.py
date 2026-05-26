@@ -67,7 +67,6 @@ class TestMINTScorer(unittest.TestCase):
             scores = scorer.score_mutants(
                 target_names=batch_targets,
                 mutant_seqs=self.mutant_seqs,
-                target_dict=self.mock_targets,
                 batch_size=2
             )
         except Exception as e:
@@ -105,7 +104,6 @@ class TestMINTScorer(unittest.TestCase):
             scorer.score_mutants(
                 target_names=["Target_1"], # Intentionally mismatched length 
                 mutant_seqs=self.mutant_seqs, 
-                target_dict=self.mock_targets
             )
 
 if __name__ == '__main__':

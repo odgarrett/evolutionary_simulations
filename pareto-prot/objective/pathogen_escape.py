@@ -8,7 +8,7 @@ class PathogenEscape:
     by an immune receptor.
 
     Requires calibration by bounding values for each objective. Provide
-    as tuple (score yielding 0 probability, score yielding 1 probability).
+    as tuple (worst_score, best_score) along with directionality flags.
     Interpolates between bounds using a sigmoid, then computes fitness
     as Fitness = P(Target_A_Binding) * (1 - P(Target_B_Binding)).
     '''
@@ -19,14 +19,31 @@ class PathogenEscape:
         target_a_bounds: tuple, 
         target_b_bounds: tuple,
         target_a_slope: float = 10.0,
-        target_b_slope: float = 10.0
+        target_b_slope: float = 10.0,
+        target_a_higher_is_better: bool = True,
+        target_b_higher_is_better: bool = True
     ):
         self.name_a = target_a_name
         self.name_b = target_b_name
-        self.a_low, self.a_high = target_a_bounds
-        self.b_low, self.b_high = target_b_bounds
+        
+        # Unpack parameters assuming (worst_score, best_score) semantic layout
+        a_bound_1, a_bound_2 = target_a_bounds
+        b_bound_1, b_bound_2 = target_b_bounds
+        
+        # Enforce directionality based on the biological reality of the metric
+        if target_a_higher_is_better:
+            self.a_low, self.a_high = min(a_bound_1, a_bound_2), max(a_bound_1, a_bound_2)
+        else:
+            self.a_low, self.a_high = max(a_bound_1, a_bound_2), min(a_bound_1, a_bound_2)
+            
+        if target_b_higher_is_better:
+            self.b_low, self.b_high = min(b_bound_1, b_bound_2), max(b_bound_1, b_bound_2)
+        else:
+            self.b_low, self.b_high = max(b_bound_1, b_bound_2), min(b_bound_1, b_bound_2)
+
         self.a_slope = target_a_slope
         self.b_slope = target_b_slope
+        
 
     def _sigmoid_probability(self, val: float, low: float, high: float, slope_factor: float) -> float:
         if val <= min(low, high): return 0.0 if low < high else 1.0

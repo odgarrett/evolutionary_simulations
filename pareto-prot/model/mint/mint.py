@@ -90,7 +90,7 @@ class MINTScorer:
         for name, emb in zip(target_names, wt_embs):
             self.wt_cache[name] = emb
 
-    def score_mutants(self, target_names: list, mutant_seqs: list, target_dict: dict, batch_size: int = 1) -> list:
+    def score_mutants(self, target_names: list, mutant_seqs: list, batch_size: int = 1) -> list:
         '''
         Takes a batch of mutant sequences and their corresponding targets.
         Calculates the mutant embeddings, fetches the cached WT embeddings, and predicts the phenotypic score.
@@ -108,7 +108,7 @@ class MINTScorer:
             raise ValueError("Target names list and mutant sequences list must be the same length.")
 
         # Retrieve target seqs
-        target_seqs = [target_dict[name] for name in target_names]
+        target_seqs = [self.target_dict[name] for name in target_names]
 
         # Initialize in-memory dataset and dataloader
         dataset = MiniDataset(target_seqs, mutant_seqs)
