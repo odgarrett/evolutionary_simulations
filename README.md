@@ -31,8 +31,16 @@ Runs the main loop. At each step, it applies the mutator to the current set of s
 ### Server
 Acts as a kind of internal server. Holds a common instance of the prediction model. Receives requests for model scores from simulators. It retrieves requests that are present in the cache (see database below) and predicts and stores those that aren't. Sends scores back to the simulators.
 
-### Database
-SQLite database with tables for the simulation cache and simulation results. It will have three tables: cache, simulations, and trajectories. Cache stores the aa sequence hash for fast look-up, the full amino acid sequence, and the model scores. Simulations keeps track of the different simulations ran with all of their parameters (e.g. analyzed protein, target proteins, mutator parameters, prediction model, population size, etc.), along with metadata like start_time and a UUID. Trajectories stores the stepwise data collected during the simulations.
+### Database (db)
+SQLite database. Contains four tables: scores, simulations, variants, and experiments.
+
+First, we have scores to store all model predictions. We'll have a primary key, model where I'll log what specific prediction model was used, target_name to specify the binding partner, mut_seq, then the score.
+
+Next, we have simulations. Each of these represent one run of the simulate_generations function. It will log an id, start and end timestamps, and all the params (protein of interest name, wt sequence, model, model params like weights and regressor path, mutator, mutation rate, objective, objective params like targets, bounds, slops, and higher is better, pool size, top k, and generations). For organizing these, we have columns for poi_name, wt_sequence, model (e.g. MintScorer), model params (JSON), mutator (e.g. ProteinMutator), mutator params (JSON), objective (e.g. PathogenEscape), objective params (JSON), simulator (e.g. GreedySimulator), simulator params (JSON), and experiment_id (foreign key)
+
+Next, we'll have variants. We'll need an id, simulation_id (foreign key), generation, sequence, composite_fitness, and parent_sequences.
+
+Finally, we'll have an experiments table. This will just have an id, experiment_name, and experiment_desc (optional, to hold a brief description of the goal).
 
 ### Experiment
 Orchestrates multiple simulation runs to test a specific hypothesis. Manages configs and disk I/O.

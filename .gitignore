@@ -1,4 +1,4 @@
-./mint/
+/mint/
 mint_mut_ppi_example/data/Mutation_perturbation_model.csv
 mint_mut_ppi_example/data/uniprot_sprot.fasta.gz
 mint_mut_ppi_example/data/uniprot_sprot.fasta
