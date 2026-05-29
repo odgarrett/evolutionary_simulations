@@ -19,6 +19,9 @@ class Simulation(Base):
     id = Column(Integer, primary_key=True)
     experiment_id = Column(Integer, ForeignKey('experiments.id'), nullable=False)
 
+    condition_name = Column(String, nullable=False)
+    replicate_num = Column(Integer, nullable=False)
+
     start_timestamp = Column(DateTime, default=datetime.utcnow)
     end_timestamp = Column(DateTime, nullable=True)
 

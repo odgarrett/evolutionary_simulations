@@ -1,4 +1,5 @@
 from typing import List, Dict, Iterator, Tuple
+import numpy as np
 
 class GreedySimulator:
     '''
@@ -36,6 +37,38 @@ class GreedySimulator:
     def initialize_seed_sequences(self, seeds: List[str]):
         '''Sets the starting sequences for Generation 0.'''
         self.seed_sequences = seeds
+
+    def _print_telemetry(self, gen, fitness_dict, variant_scores):
+        """Prints an aesthetic console block of variant statistics."""
+        fit_vals = list(fitness_dict.values())
+        
+        print(f"\n" + "═"*50)
+        print(f" GENERATION {gen} STATS ".center(50, "═"))
+        print("═"*50)
+        print(f" Population Size: {len(fit_vals)} variants".center(50))
+        print("─"*50)
+        
+        # Composite Fitness (Higher is Better)
+        print(f" [Composite Fitness]")
+        print(f"   Max:    {np.max(fit_vals):>8.4f}")
+        print(f"   Mean:   {np.mean(fit_vals):>8.4f}")
+        print(f"   Median: {np.median(fit_vals):>8.4f}")
+        print(f"   Min:    {np.min(fit_vals):>8.4f}")
+        
+        # Raw Target Scores (Lower is Better for MINT ddG)
+        for target in self.target_names:
+            print("─"*50)
+            # Extract scores strictly for this target directly from the nested dictionary
+            t_vals = [scores[target] for variant, scores in variant_scores.items() if target in scores]
+            
+            if t_vals:
+                print(f" [Target: {target}]")
+                print(f"   Min:    {np.min(t_vals):>8.4f}")
+                print(f"   Median: {np.median(t_vals):>8.4f}")
+                print(f"   Mean:   {np.mean(t_vals):>8.4f}")
+                print(f"   Max:    {np.max(t_vals):>8.4f}")
+
+        print("═"*50 + "\n")
     
     def simulate_generations(self, rounds: int) -> Iterator[Tuple[int, Dict[str, float], Dict[str, List[str]]]]:
         '''
@@ -95,6 +128,9 @@ class GreedySimulator:
             # Move top performers to seeds for the next round
             self.seed_sequences = sorted_variants[:self.top_k]
 
+            # Print the aesthetic block
+            self._print_telemetry(gen_idx, current_generation_fitness, variant_scores)
+
             # Yield data for the database manager to store
             yield gen_idx, current_generation_fitness, current_lineage_graph
-        
+    

@@ -43,7 +43,8 @@ class DatabaseManager:
             return exp.id
 
     def start_simulation(
-        self, exp_id: int, poi_name: str, wt_sequence: str,
+        self, exp_id: int, condition_name: str, replicate_num: int,
+        poi_name: str, wt_sequence: str,
         model_name: str, model_params: dict,
         mutator_name: str, mutator_params: dict,
         objective_name: str, objective_params: dict,
@@ -55,6 +56,8 @@ class DatabaseManager:
         with self.SessionLocal() as session:
             sim = Simulation(
                 experiment_id=exp_id,
+                condition_name=condition_name,
+                replicate_num=replicate_num,
                 poi_name=poi_name,
                 wt_sequence=wt_sequence,
                 model=model_name,

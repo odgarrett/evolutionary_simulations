@@ -2,7 +2,6 @@ experiment_name: avrpik_dual_constraint_v1
 experiment_desc: Testing MINT ddG on OsHIPP20 and Pikm-1 with 1% mutation rate
 poi_name: AVR-Pik
 wt_sequence: ETGNKYIEKRAIDLSRERDPNFFDNADIPVPECFWFMFKNNVRQDAGTCYSSWKMDMKVGPNWVHIKSDDNCNLSGDFPPGWIVLGKKRPGF
-replicates: 2
 targets:
   OsHIPP20: GEMQKIVFKIPMVDDKSRTKAMSLVASTVGVHSVAIAGDLRDQVVVVGDGIDSINLVSALRKKVGPAMFLEVSQVKED
   Pikm-1: GLKQKIVIKVAMEGNNCRSKAMALVASTGGVDSVALVGDLRDKIEVVGYGIDPIKLISALRKKVGDAELLQVSQANKD
@@ -27,20 +26,51 @@ mutator:
   params:
     mutation_rate: 0.01075
 
-objective:
-  name: PathogenEscape
-  params:
-    target_a_name: OsHIPP20
-    target_b_name: Pikm-1
-    target_a_bounds: [0.0666, 0.0658]
-    target_b_bounds: [0.0666, 0.0660]
-    target_a_slope: 10.0
-    target_b_slope: 10.0
-    target_a_higher_is_better: false
-    target_b_higher_is_better: false
-
 simulator:
   name: GreedySimulator
   params:
     pool_size: 40
     top_k: 5
+
+conditions: 
+  - condition_name: dual_constraints
+    replicates: 1
+    objective:
+      name: PathogenEscape
+      params:
+        target_a_name: OsHIPP20
+        target_b_name: Pikm-1
+        target_a_bounds: [0.0666, 0.0658] # [Worst score, best score]
+        target_b_bounds: [0.0666, 0.0660]
+        target_a_slope: 10.0
+        target_b_slope: 10.0
+        target_a_higher_is_better: false
+        target_b_higher_is_better: false
+
+  - condition_name: virulence_only
+    replicates: 1
+    objective:
+      name: PathogenEscape
+      params:
+        target_a_name: OsHIPP20
+        target_b_name: Pikm-1
+        target_a_bounds: [0.0666, 0.0658]
+        target_b_bounds: [-100, -101] # Binding score will always be zero, setting evasion term = 1
+        target_a_slope: 10.0
+        target_b_slope: 10.0
+        target_a_higher_is_better: false
+        target_b_higher_is_better: false
+
+  - condition_name: evasion_only
+    replicates: 1
+    objective:
+      name: PathogenEscape
+      params:
+        target_a_name: OsHIPP20
+        target_b_name: Pikm-1
+        target_a_bounds: [101, 100] # Binding score will always be 1
+        target_b_bounds: [0.0666, 0.0660]
+        target_a_slope: 10.0
+        target_b_slope: 10.0
+        target_a_higher_is_better: false
+        target_b_higher_is_better: false
