@@ -1,0 +1,46 @@
+experiment_name: avrpik_dual_constraint_v1
+experiment_desc: Testing MINT ddG on OsHIPP20 and Pikm-1 with 1% mutation rate
+poi_name: AVR-Pik
+wt_sequence: ETGNKYIEKRAIDLSRERDPNFFDNADIPVPECFWFMFKNNVRQDAGTCYSSWKMDMKVGPNWVHIKSDDNCNLSGDFPPGWIVLGKKRPGF
+replicates: 2
+targets:
+  OsHIPP20: GEMQKIVFKIPMVDDKSRTKAMSLVASTVGVHSVAIAGDLRDQVVVVGDGIDSINLVSALRKKVGPAMFLEVSQVKED
+  Pikm-1: GLKQKIVIKVAMEGNNCRSKAMALVASTGGVDSVALVGDLRDKIEVVGYGIDPIKLISALRKKVGDAELLQVSQANKD
+generations: 8
+ram_limit: 100000
+
+model:
+  name: MINTScorer
+  params:
+    mint_config_path: ../mint/data/esm2_t33_650M_UR50D.json
+    mint_weights_path: model/mint/mint.ckpt
+    regressor_path: model/mint/SKEMPI_v2.joblib
+
+server:
+  name: ScoringServer
+  params:
+    server_name: primary_cuda_server
+    batch_size: 8
+
+mutator:
+  name: ProteinMutator
+  params:
+    mutation_rate: 0.01075
+
+objective:
+  name: PathogenEscape
+  params:
+    target_a_name: OsHIPP20
+    target_b_name: Pikm-1
+    target_a_bounds: [0.0666, 0.0658]
+    target_b_bounds: [0.0666, 0.0660]
+    target_a_slope: 10.0
+    target_b_slope: 10.0
+    target_a_higher_is_better: false
+    target_b_higher_is_better: false
+
+simulator:
+  name: GreedySimulator
+  params:
+    pool_size: 40
+    top_k: 5

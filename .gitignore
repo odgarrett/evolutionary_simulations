@@ -7,3 +7,4 @@ model_checkpoints/
 *.csv
 mint.ckpt
 SKEMPI_v2.joblib
+*.db
